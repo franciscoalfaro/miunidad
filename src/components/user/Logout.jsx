@@ -15,18 +15,15 @@ export const Logout = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          credentials: 'include', // Para enviar cookies en la solicitud
+          credentials: 'include', // Incluir cookies en la solicitud
         });
 
         const data = await request.json();
 
         if (data.status === 'success') {
-          console.log('Sesión cerrada con éxito');
-          // Limpiar el estado de autenticación
           setAuth({});
-
           localStorage.removeItem('user');
-          navigate('/'); // Redirigir a la página principal
+          navigate('/');
         } else {
           console.error('Error al cerrar sesión:', data.message);
         }
@@ -35,7 +32,6 @@ export const Logout = () => {
       }
     };
 
-    // Llamar a la función para cerrar sesión
     exit();
   }, [setAuth, navigate]);
 

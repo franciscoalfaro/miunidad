@@ -16,10 +16,6 @@ export const Unidad = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
-  console.log('aut', auth)
-
-
-
   const [directoryContent, setDirectoryContent] = useState({
     files: [],
     directorios: []

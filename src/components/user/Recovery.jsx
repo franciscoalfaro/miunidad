@@ -26,7 +26,6 @@ export const Recovery = () => {
       const data = await request.json()
      
       if (data.status === "success") {
-        console.log(data.status)
         Swal.fire({
           position: 'center',
           icon: 'success',

@@ -24,7 +24,6 @@ export const Archivos = () => {
   usePrecargarVideos(directoryContent.files);
 
   const handleAbrirVideo = (file) => {
-    console.log('abriendo',file)
     abrirVideo(file);
   };
 

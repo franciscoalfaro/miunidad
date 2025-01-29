@@ -37,7 +37,6 @@ const usePrecargarVideos = (files) => {
         try {
           // Verificar si el video ya está en caché
           const cachedVideo = localStorage.getItem(videoUrl);
-          console.log(cachedVideo)
           if (!cachedVideo) {
             // Si no está en caché, cargarlo
             const response = await fetch(videoUrl, {

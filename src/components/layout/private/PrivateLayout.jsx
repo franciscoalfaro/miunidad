@@ -35,7 +35,7 @@ export const PrivateLayout = () => {
     <>
       <Header />
       <div className="container">
-        {auth._id ? <Outlet></Outlet> : <Navigate to="/"></Navigate>}
+        {auth.id ? <Outlet></Outlet> : <Navigate to="/"></Navigate>}
       </div>
       <Footer />
     </>

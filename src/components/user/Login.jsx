@@ -5,15 +5,10 @@ import useAuth from '../../hooks/useAuth';
 import { Global } from '../../helpers/Global';
 import { NavLink } from 'react-router-dom';
 
-
-
 export const Login = () => {
     const { form, changed } = useForm({});
     const { setAuth } = useAuth();
 
-
-
-    // Función para manejar el login del usuario
     const loginUser = async (e) => {
         e.preventDefault();
 
@@ -24,26 +19,18 @@ export const Login = () => {
             body: JSON.stringify(userLogin),
             headers: {
                 "Content-Type": "application/json"
-            },credentials: 'include',
-           
+            },
+            credentials: 'include', // Incluir cookies en la solicitud
         });
 
         const data = await request.json();
 
         if (data.status === "success") {
-            // Este debe de ser localStorage que almacene el usuario solamente id, nombre
             localStorage.setItem("user", JSON.stringify(data.user));
-
-        
             setAuth(data.user);
-
             Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1500 });
-            //navigate('/auth/'); // Usar navigate en lugar de window.location.replace
-            window.location.replace('/auth');
-
-
+            //window.location.replace('/auth');
         } else {
-        
             Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1500 });
         }
     };
