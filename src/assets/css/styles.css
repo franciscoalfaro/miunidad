@@ -1,0 +1,186 @@
+body {
+  background-color: #f4f6f8;
+  font-family: 'Arial', sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.content {
+  flex: 1;
+}
+
+.navbar {
+  background: linear-gradient(135deg, rgb(43 64 135 / 78%), #0d1117);
+  border-bottom: 1px solid #8aa4c9;
+  box-shadow: -9px -9px 15px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  color: #ffffff;
+}
+
+.navbar-nav .nav-link {
+  color: #ffffff;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #adb5bd;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+.page-header {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  /* For positioning the icons */
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+  text-align: center;
+  padding: 20px;
+}
+
+.file-icon,
+.folder-icon {
+  font-size: 48px;
+  color: #007bff;
+}
+
+.folder-icon {
+  color: #ffc107;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  border-color: #007bff;
+  border-radius: 10px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0056b3, #003d7a);
+  border-color: #004085;
+}
+
+.btn-modal,
+.btn-create-folder {
+  border-color: #28a745 !important;
+  border-radius: 10px !important;
+  transition: background-color 0.3s, border-color 0.3s !important;
+}
+
+
+
+.btn-modal:hover,
+.btn-create-folder:hover {
+  background-color: #218838 !important;
+  border-color: #1e7e34 !important;
+}
+
+.pagination {
+  justify-content: center;
+}
+
+.download-icon,
+.delete-icon {
+  font-size: 24px;
+  color: #007bff;
+  transition: color 0.3s;
+}
+
+.download-icon:hover,
+.delete-icon:hover {
+  color: #068f04;
+}
+
+.download-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.delete-icon:hover {
+  color: #dc3545;
+}
+
+.disk-info {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.disk-progress {
+  height: 25px;
+  margin-top: 1rem;
+}
+
+.table thead th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.progress-bar {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+#thead{
+  background: linear-gradient(135deg, rgb(43 64 135 / 78%), #0d1117) !important;
+  color: #ffffff !important;
+}
+
+.footer {
+  width: 100%;
+  background: linear-gradient(135deg, rgb(43 64 135 / 78%), #0d1117);
+  text-align: center;
+  padding: 10px 0;
+  margin-top: auto;
+  color: #ffffff;
+}
+
+.bi-file-earmark-pdf{
+  color: #e03e36;;
+}
+
