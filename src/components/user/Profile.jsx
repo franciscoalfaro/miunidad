@@ -12,8 +12,6 @@ export const Profile = () => {
   const updateUser = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('token');
-
     // Recoger datos del formulario
     let newDataUser = SerializeForm(e.target);
     // Eliminar datos innecesarios

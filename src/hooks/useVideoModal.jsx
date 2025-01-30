@@ -7,30 +7,13 @@ const useVideoModal = () => {
   const [error, setError] = useState(null);
   const controllerRef = useRef(null);
 
-  const getCookie = (name) => {
-    const cookies = document.cookie.split('; ');
-    for (let cookie of cookies) {
-        const [key, value] = cookie.split('=');
-        if (key === name) {
-            return decodeURIComponent(value);
-        }
-    }
-    return null;
-};
-
-
   const abrirVideo = useCallback(async (file) => {
 
     const id = file._id;
-     const token = getCookie('token');
-
-    if (!token) {
-      setError('Token no encontrado. Inicie sesión nuevamente.');
-      return;
-    }
 
     const baseUrl = Global.url + 'file/play/';
     const videoUrl = `${baseUrl}${id}`;
+    console.log(videoUrl)
 
     // Cancelar solicitud anterior si existe
     if (controllerRef.current) {
