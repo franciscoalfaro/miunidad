@@ -26,12 +26,7 @@ export const Recovery = () => {
       const data = await request.json()
      
       if (data.status === "success") {
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'En caso de existir cuenta se enviará correo con clave provisional',
-          showConfirmButton: true,
-        }).then((result) => {
+        Swal.fire({  position: 'center',  icon: 'success', title: 'En caso de existir cuenta se enviará correo con clave provisional', showConfirmButton: true, }).then((result) => {
           if (result.isConfirmed) {
             // Redirigir a la página de login
             navigate('/login');

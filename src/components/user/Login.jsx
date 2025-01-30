@@ -5,10 +5,15 @@ import useAuth from '../../hooks/useAuth';
 import { Global } from '../../helpers/Global';
 import { NavLink } from 'react-router-dom';
 
+
+
 export const Login = () => {
     const { form, changed } = useForm({});
     const { setAuth } = useAuth();
 
+
+
+    // Función para manejar el login del usuario
     const loginUser = async (e) => {
         e.preventDefault();
 
@@ -19,18 +24,26 @@ export const Login = () => {
             body: JSON.stringify(userLogin),
             headers: {
                 "Content-Type": "application/json"
-            },
-            credentials: 'include', // Incluir cookies en la solicitud
+            }, credentials: 'include',
+
         });
 
         const data = await request.json();
 
         if (data.status === "success") {
+            // Este debe de ser localStorage que almacene el usuario solamente id, nombre
             localStorage.setItem("user", JSON.stringify(data.user));
+
+
             setAuth(data.user);
+
             Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1500 });
-            //window.location.replace('/auth');
+            //navigate('/auth/'); // Usar navigate en lugar de window.location.replace
+            window.location.replace('/auth');
+
+
         } else {
+
             Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1500 });
         }
     };
@@ -44,10 +57,11 @@ export const Login = () => {
                 <div className="row mt-lg-n10 mt-md-n11 mt-n10">
                     <div className="col-xl-5 col-lg-5 col-md-7 mx-auto">
                         <div className="card z-index-0">
-                            <div className="card-header text-center pt-4">
-                                <h5>Iniciar Sesion</h5>
-                            </div>
                             <div className="card-body">
+                                <div className="text-center mb-4">
+                                    <img src="src/assets/img/logo-v.png" alt="Logo Empresa" className="img-fluid" width="100"></img>
+                                </div>
+                                <h2 className="text-center mb-4">Iniciar Sesion</h2>
                                 <form onSubmit={loginUser}>
                                     <div className="mb-3">
                                         <label htmlFor="email" className="">Dirección de correo</label>
