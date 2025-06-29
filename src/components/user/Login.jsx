@@ -5,80 +5,148 @@ import useAuth from '../../hooks/useAuth';
 import { Global } from '../../helpers/Global';
 import { NavLink } from 'react-router-dom';
 
-
-
 export const Login = () => {
     const { form, changed } = useForm({});
     const { setAuth } = useAuth();
-
-
+    const [loading, setLoading] = useState(false);
 
     // Función para manejar el login del usuario
     const loginUser = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         let userLogin = form;
 
-        const request = await fetch(Global.url + "user/login", {
-            method: "POST",
-            body: JSON.stringify(userLogin),
-            headers: {
-                "Content-Type": "application/json"
-            }, credentials: 'include',
+        try {
+            const request = await fetch(Global.url + "user/login", {
+                method: "POST",
+                body: JSON.stringify(userLogin),
+                headers: {
+                    "Content-Type": "application/json"
+                }, 
+                credentials: 'include',
+            });
 
-        });
+            const data = await request.json();
 
-        const data = await request.json();
-
-        if (data.status === "success") {
-            // Este debe de ser localStorage que almacene el usuario solamente id, nombre
-            localStorage.setItem("user", JSON.stringify(data.user));
-
-
-            setAuth(data.user);
-
-            Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1500 });
-            //navigate('/auth/'); // Usar navigate en lugar de window.location.replace
-            window.location.replace('/auth');
-
-
-        } else {
-
-            Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1500 });
+            if (data.status === "success") {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                setAuth(data.user);
+                Swal.fire({ 
+                    position: "bottom-end", 
+                    title: data.message, 
+                    showConfirmButton: false, 
+                    timer: 1500,
+                    icon: 'success'
+                });
+                window.location.replace('/auth');
+            } else {
+                Swal.fire({ 
+                    position: "bottom-end", 
+                    title: data.message, 
+                    showConfirmButton: false, 
+                    timer: 1500,
+                    icon: 'error'
+                });
+            }
+        } catch (error) {
+            Swal.fire({ 
+                position: "bottom-end", 
+                title: "Error de conexión", 
+                showConfirmButton: false, 
+                timer: 1500,
+                icon: 'error'
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <section className="min-vh-100 mb-8">
-            <div className="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg">
-                <span className="mask bg-gradient-dark opacity-6"></span>
-            </div>
+        <section className="min-vh-100 d-flex align-items-center">
             <div className="container">
-                <div className="row mt-lg-n10 mt-md-n11 mt-n10">
-                    <div className="col-xl-5 col-lg-5 col-md-7 mx-auto">
-                        <div className="card z-index-0">
-                            <div className="card-body">
+                <div className="row justify-content-center">
+                    <div className="col-xl-5 col-lg-6 col-md-8">
+                        <div className="card shadow-lg border-0">
+                            <div className="card-body p-5">
                                 <div className="text-center mb-4">
-                                    <img src="src/assets/img/logo-v.png" alt="Logo Empresa" className="img-fluid" width="100"></img>
+                                    <div className="d-inline-flex align-items-center justify-content-center bg-primary bg-gradient rounded-circle mb-3" style={{width: '80px', height: '80px'}}>
+                                        <i className="bi bi-cloud-arrow-up text-white" style={{fontSize: '2rem'}}></i>
+                                    </div>
+                                    <h2 className="fw-bold text-primary mb-2">Bienvenido</h2>
+                                    <p className="text-muted">Accede a tu gestor de archivos</p>
                                 </div>
-                                <h2 className="text-center mb-4">Iniciar Sesion</h2>
+                                
                                 <form onSubmit={loginUser}>
-                                    <div className="mb-3">
-                                        <label htmlFor="email" className="">Dirección de correo</label>
-                                        <input type="email" name="email" className="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon" onChange={changed} required></input>
-                                        <div id="emailHelp" className="form-text">Nunca compartiremos tu correo electrónico con nadie más.</div>
+                                    <div className="mb-4">
+                                        <label htmlFor="email" className="form-label fw-semibold">
+                                            <i className="bi bi-envelope me-2"></i>
+                                            Dirección de correo
+                                        </label>
+                                        <input 
+                                            type="email" 
+                                            name="email" 
+                                            className="form-control form-control-lg" 
+                                            placeholder="ejemplo@correo.com" 
+                                            aria-label="Email" 
+                                            onChange={changed} 
+                                            required
+                                            disabled={loading}
+                                        />
+                                        <div className="form-text">
+                                            <i className="bi bi-info-circle me-1"></i>
+                                            Nunca compartiremos tu correo electrónico
+                                        </div>
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="password" className="">Contraseña</label>
-                                        <input type="password" name="password" className="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon" onChange={changed} required></input>
+                                    
+                                    <div className="mb-4">
+                                        <label htmlFor="password" className="form-label fw-semibold">
+                                            <i className="bi bi-lock me-2"></i>
+                                            Contraseña
+                                        </label>
+                                        <input 
+                                            type="password" 
+                                            name="password" 
+                                            className="form-control form-control-lg" 
+                                            placeholder="••••••••" 
+                                            aria-label="Password" 
+                                            onChange={changed} 
+                                            required
+                                            disabled={loading}
+                                        />
                                     </div>
-                                    <div className="mb-3 form-check">
-                                        <p className="text-sm mt-3 mb-0">No tienes cuenta? <NavLink to="/registro" className="text-dark font-weight-bolder">Regístrate</NavLink></p>
-                                        <br></br>
-                                        <p className="text-sm mt-3 mb-0"><NavLink to="/recuperar" className="text-dark font-weight-bolder">¿Olvidaste tu contraseña?</NavLink></p>
+                                    
+                                    <div className="d-grid mb-4">
+                                        <button 
+                                            type="submit" 
+                                            className="btn btn-primary btn-lg"
+                                            disabled={loading}
+                                        >
+                                            {loading ? (
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                    Iniciando sesión...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="bi bi-box-arrow-in-right me-2"></i>
+                                                    Iniciar sesión
+                                                </>
+                                            )}
+                                        </button>
                                     </div>
+                                    
                                     <div className="text-center">
-                                        <button type="submit" className="btn btn-primary">Iniciar sesion</button>
+                                        <div className="mb-3">
+                                            <NavLink to="/registro" className="text-decoration-none fw-semibold">
+                                                <i className="bi bi-person-plus me-1"></i>
+                                                ¿No tienes cuenta? Regístrate
+                                            </NavLink>
+                                        </div>
+                                        <NavLink to="/recuperar" className="text-muted text-decoration-none">
+                                            <i className="bi bi-question-circle me-1"></i>
+                                            ¿Olvidaste tu contraseña?
+                                        </NavLink>
                                     </div>
                                 </form>
                             </div>
