@@ -1,48 +1,36 @@
 import { useEffect } from 'react';
-import { Global } from '../helpers/Global';
+import fileService from '../services/fileService';
 
 const usePrecargarVideos = (files) => {
-
-
-
-
   useEffect(() => {
     const precargarVideos = async (files) => {
-
-      // Filtrar solo los archivos de tipo video
+      // Filter only video files
       const videos = files.filter(file => file.mimetype.startsWith('video/'));
 
-      // Iterar sobre los videos y precargarlos
+      // Iterate over videos and preload them
       for (const video of videos) {
         const id = video._id;
-        const videoUrl = `${Global.url}file/play/${id}`;
+        const cacheKey = `video_${id}`;
 
         try {
-          // Verificar si el video ya está en caché
-          const cachedVideo = localStorage.getItem(videoUrl);
+          // Check if video is already cached
+          const cachedVideo = localStorage.getItem(cacheKey);
           if (!cachedVideo) {
-            // Si no está en caché, cargarlo
-            const response = await fetch(videoUrl, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              credentials: 'include',
-            });
-
-            if (!response.ok) {
-              console.error('Error al obtener el video:', videoUrl);
-              continue;
+            // If not cached, load it
+            const result = await fileService.getVideoStream(id);
+            
+            if (result.success) {
+              // Save to cache (note: localStorage has size limits)
+              try {
+                localStorage.setItem(cacheKey, result.videoUrl);
+              } catch (e) {
+                // If localStorage is full, skip caching
+                console.warn('Could not cache video due to storage limits');
+              }
             }
-
-            const blob = await response.blob();
-            const videoBlobUrl = URL.createObjectURL(blob);
-
-            // Guardar en caché
-            localStorage.setItem(videoUrl, videoBlobUrl);
           }
         } catch (error) {
-          console.error('Error al cargar video:', error.message);
+          console.error('Error preloading video:', error.message);
         }
       }
     };

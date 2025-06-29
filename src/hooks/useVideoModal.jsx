@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { Global } from '../helpers/Global';
+import fileService from '../services/fileService';
 
 const useVideoModal = () => {
   const [videoModal, setVideoModal] = useState({ isOpen: false, videoUrl: '' });
@@ -8,14 +8,9 @@ const useVideoModal = () => {
   const controllerRef = useRef(null);
 
   const abrirVideo = useCallback(async (file) => {
-
     const id = file._id;
 
-    const baseUrl = Global.url + 'file/play/';
-    const videoUrl = `${baseUrl}${id}`;
-    console.log(videoUrl)
-
-    // Cancelar solicitud anterior si existe
+    // Cancel previous request if exists
     if (controllerRef.current) {
       controllerRef.current.abort();
     }
@@ -25,22 +20,12 @@ const useVideoModal = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(videoUrl, {
-        method: 'GET',
-        headers: { 
-          'Content-Type': 'application/json',
-        },credentials: 'include',
-        signal: controllerRef.current.signal,
-      });
+      const result = await fileService.getVideoStream(id);
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const videoBlobUrl = URL.createObjectURL(blob);
-        
-        setVideoModal({ isOpen: true, videoUrl: videoBlobUrl });
+      if (result.success) {
+        setVideoModal({ isOpen: true, videoUrl: result.videoUrl });
       } else {
-        const responseBody = await response.json();
-        setError(responseBody.message || 'Error al obtener el video.');
+        setError(result.message || 'Error al obtener el video.');
       }
     } catch (error) {
       if (error.name !== 'AbortError') {
@@ -53,7 +38,7 @@ const useVideoModal = () => {
 
   const cerrarVideo = useCallback(() => {
     if (videoModal.videoUrl) {
-      URL.revokeObjectURL(videoModal.videoUrl); // Limpiar URL creada
+      URL.revokeObjectURL(videoModal.videoUrl);
     }
     setVideoModal({ isOpen: false, videoUrl: '' });
     controllerRef.current = null;

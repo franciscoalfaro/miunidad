@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Global } from '../../helpers/Global'
 import { useForm } from '../../hooks/useForm'
 import { Spiner } from '../../hooks/Spiner'
+import authService from '../../services/authService'
 
 export const Recovery = () => {
   const { form, changed } = useForm({})
@@ -11,43 +11,41 @@ export const Recovery = () => {
 
   const recuperar = async (e) => {
     e.preventDefault();
-    setLoading(true); // Iniciamos el indicador de carga
+    setLoading(true);
 
     try {
-      let recoverUser = form
-
-      const request = await fetch(Global.url + "user/forgot-password", {
-        method: "POST",
-        body: JSON.stringify(recoverUser),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      const data = await request.json()
-     
-      if (data.status === "success") {
-        Swal.fire({  position: 'center',  icon: 'success', title: 'En caso de existir cuenta se enviará correo con clave provisional', showConfirmButton: true, }).then((result) => {
+      const result = await authService.forgotPassword(form.email);
+      
+      if (result.success) {
+        Swal.fire({  
+          position: 'center',  
+          icon: 'success', 
+          title: 'En caso de existir cuenta se enviará correo con clave provisional', 
+          showConfirmButton: true, 
+        }).then((result) => {
           if (result.isConfirmed) {
-            // Redirigir a la página de login
             navigate('/login');
           }
         });
-
       } else {
-        // Mostramos un mensaje de error si la solicitud no fue exitosa
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: data.message,
+          text: result.message,
         });
       }
     } catch (error) {
       console.error("Error:", error);
-      // Manejo de errores
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error inesperado',
+      });
     } finally {
-      setLoading(false); // Desactivamos el indicador de carga después de la solicitud
+      setLoading(false);
     }
   };
+
   return (
     <div className="bg-light d-flex align-items-center vh-100">
       <div className="container">
@@ -62,12 +60,24 @@ export const Recovery = () => {
                 <form onSubmit={recuperar}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Correo Electrónico</label>
-                    <input type="email" className="form-control" name='email' id="email" placeholder="Ingrese su correo electrónico" onChange={changed} required></input>
+                    <input 
+                      type="email" 
+                      className="form-control" 
+                      name='email' 
+                      id="email" 
+                      placeholder="Ingrese su correo electrónico" 
+                      onChange={changed} 
+                      required
+                      disabled={loading}
+                    />
                   </div>
                   <div className="col-12">
-                    {loading ? (<Spiner></Spiner>
+                    {loading ? (
+                      <Spiner />
                     ) : (
-                      <button type="submit" className="btn btn-primary w-100">Recuperar Clave</button>
+                      <button type="submit" className="btn btn-primary w-100">
+                        Recuperar Clave
+                      </button>
                     )}
                   </div>
 

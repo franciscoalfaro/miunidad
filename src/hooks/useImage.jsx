@@ -1,34 +1,26 @@
 import { useState, useEffect } from "react";
-import { Global } from "../helpers/Global";
+import fileService from "../services/fileService";
 
 const useImage = (imageId) => {
     const [imageUrl, setImageUrl] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-   
     useEffect(() => {
         const fetchImage = async () => {
             if (!imageId) return;
 
             try {
-                const response = await fetch(`${Global.url}file/media/${imageId}`, {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error al cargar la imagen: ${response.statusText}`);
+                setLoading(true);
+                const result = await fileService.getImage(imageId);
+                
+                if (result.success) {
+                    setImageUrl(result.imageUrl);
+                } else {
+                    setError(result.message);
                 }
-
-                const blob = await response.blob();
-                const imageUrl = URL.createObjectURL(blob);
-                setImageUrl(imageUrl);
             } catch (error) {
-                setError(error.message);
+                setError('Error al cargar la imagen');
             } finally {
                 setLoading(false);
             }
@@ -36,7 +28,7 @@ const useImage = (imageId) => {
 
         fetchImage();
 
-        // Limpia la URL del objeto para liberar memoria.
+        // Cleanup function to revoke object URL
         return () => {
             if (imageUrl) URL.revokeObjectURL(imageUrl);
         };

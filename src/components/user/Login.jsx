@@ -2,39 +2,26 @@ import React from 'react';
 import { useForm } from '../../hooks/useForm';
 import { useState } from 'react';
 import useAuth from '../../hooks/useAuth';
-import { Global } from '../../helpers/Global';
 import { NavLink } from 'react-router-dom';
+import authService from '../../services/authService';
 
 export const Login = () => {
     const { form, changed } = useForm({});
     const { setAuth } = useAuth();
     const [loading, setLoading] = useState(false);
 
-    // Función para manejar el login del usuario
     const loginUser = async (e) => {
         e.preventDefault();
         setLoading(true);
 
-        let userLogin = form;
-
         try {
-            const request = await fetch(Global.url + "user/login", {
-                method: "POST",
-                body: JSON.stringify(userLogin),
-                headers: {
-                    "Content-Type": "application/json"
-                }, 
-                credentials: 'include',
-            });
-
-            const data = await request.json();
-
-            if (data.status === "success") {
-                localStorage.setItem("user", JSON.stringify(data.user));
-                setAuth(data.user);
+            const result = await authService.login(form);
+            
+            if (result.success) {
+                setAuth(result.user);
                 Swal.fire({ 
                     position: "bottom-end", 
-                    title: data.message, 
+                    title: result.message, 
                     showConfirmButton: false, 
                     timer: 1500,
                     icon: 'success'
@@ -43,7 +30,7 @@ export const Login = () => {
             } else {
                 Swal.fire({ 
                     position: "bottom-end", 
-                    title: data.message, 
+                    title: result.message, 
                     showConfirmButton: false, 
                     timer: 1500,
                     icon: 'error'
